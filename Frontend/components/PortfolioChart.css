@@ -1,0 +1,12 @@
+.portfolio-chart {
+    background: #2e3b4e;
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    margin-bottom: 20px;
+  }
+  
+  .portfolio-chart h3 {
+    margin-bottom: 15px;
+    color: #ffffff;
+  }

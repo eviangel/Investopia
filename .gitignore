@@ -1,0 +1,34 @@
+# Python-related
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# pytest-related
+.pytest_cache/
+
+
+# FastAPI/ASGI specific logs and files
+logs/
+*.log
+*.pid
+*.sqlite3
+instance/
+db.sqlite3
+
+# MySQL configuration or dump files (if applicable)
+*.db
+*.dump
+
+# Environment variables
+.env
+
+# Windows system files
+Thumbs.db
+
+# Node.js dependencies
+node_modules/
+dist/
+
+

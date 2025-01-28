@@ -1,0 +1,24 @@
+.upgrade-banner {
+  background: #344748;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.upgrade-text {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.upgrade-button {
+  background: #f39c12;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.upgrade-button:hover {
+  background: #e67e22;
+}

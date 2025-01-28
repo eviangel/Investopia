@@ -1,0 +1,73 @@
+/* BalanceInfo.css */
+.balance-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: #2e3b4e;
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+  gap: 20px;
+}
+
+.balance-section {
+  flex: 1;
+  background: #34495e;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: left;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.performer-container {
+  display: flex;
+  flex: 2;
+  gap: 20px;
+}
+
+.performer-box {
+  flex: 1;
+  background: #34495e;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.buttons-right {
+  position: absolute;
+  right: 150px;
+  display: flex;
+  margin-top: 50px;
+  /* flex-direction: column; Stacks buttons vertically */
+  gap: 25px; /* Adds space between buttons */
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.action-button {
+  background-color: #127c66;
+  color: white;
+  border: none;
+  padding: 15px 25px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.action-button:hover {
+  background-color: #16a085;
+}
+
+/* .best-performer {
+  border: 2px solid #1abc9c;
+}
+
+.worst-performer {
+  border: 2px solid #e74c3c;
+} */
