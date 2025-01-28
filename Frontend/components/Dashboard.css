@@ -1,0 +1,31 @@
+.dashboard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  color: #ecf0f1;
+  overflow-y: auto; /* Enables vertical scrolling */
+  height: 100%; /* Ensure it stretches to fit the parent container */
+}
+
+.top-section {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.chart-section {
+  margin-bottom: 20px;
+}
+
+.main-section {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.side-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}

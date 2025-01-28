@@ -1,0 +1,22 @@
+.news {
+  background: #34495e;
+  border: 1px solid #2c3e50;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.news h3 {
+  margin-bottom: 10px;
+  color: #ecf0f1;
+}
+
+.news ul {
+  list-style: none;
+  padding: 0;
+}
+
+.news li {
+  margin-bottom: 10px;
+  color: #bdc3c7;
+}

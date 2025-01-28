@@ -1,0 +1,96 @@
+/* .sidebar {
+  width: 20%;
+  background: #D7CEB2;
+  color: black;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #987284;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-menu li {
+  margin: 10px 0;
+  cursor: pointer;
+  color: black;
+}
+
+.sidebar-menu li:hover {
+  color: #1abc9c;
+}
+
+.sidebar-footer {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #95a5a6;
+} */
+
+
+
+.sidebar {
+  width: 10%;
+  background: linear-gradient(180deg, #34495e, #2c3e50);
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar-title {
+  font-size: 28px;
+  margin-bottom: -200px; /* Adds space below the logo */
+  color: #ecf0f1;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+  margin-bottom: 80px; /* Adds space between menu items and footer */
+}
+
+.sidebar-icon {
+  font-size: 18px; /* Adjusts icon size */
+  margin-right: 15px; /* Adds space between icon and text */
+  color: #bdc3c7;
+}
+
+.sidebar-text {
+  font-size: 18px; /* Adjusts text size */
+  color: #ecf0f1;
+}
+
+.sidebar-item {
+  margin: 25px 0; /* Adds space between individual menu items Dashbord, Tradehistory etc. */
+  cursor: pointer;
+  color: #bdc3c7;
+}
+
+.sidebar-item:hover .sidebar-icon,
+.sidebar-item:hover .sidebar-text {
+  color: #1abc9c; /* Highlight color on hover */
+}
+
+.sidebar-footer .sidebar-icon {
+  margin-right: 10px; /* Adds space between footer icons and text */
+  font-size: 18px;
+}
+
+.sidebar-footer {
+  margin-top: 20px; /* Ensures spacing above the footer */
+  font-size: 14px;
+  color: #95a5a6;
+  padding: 10px;
+}
+

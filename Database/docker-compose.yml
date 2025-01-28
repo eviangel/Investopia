@@ -1,0 +1,31 @@
+version: '3.1'
+
+services:
+  # MySQL Service
+  db:
+    image: mysql:8.0.23
+    command: 
+      - --default-authentication-plugin=mysql_native_password  # Using mysql_native_password for compatibility
+    ports:
+      - "3306:3306"  # Expose MySQL on port 3306
+    volumes:
+      - ./docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/:ro  # Mount init SQL scripts
+      - dbdata:/var/lib/mysql  # Persistent MySQL storage
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}  # Root password for MySQL from .env
+      MYSQL_DATABASE: ${MYSQL_DATABASE}  # Default database created at initialization from .env
+
+  # phpMyAdmin Service
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"  # Expose phpMyAdmin on port 8080
+    environment:
+      PMA_HOST: db  # Connect to the MySQL service named 'db'
+      PMA_USER: root  # MySQL user
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}  # MySQL password from .env
+
+volumes: 
+  dbdata:  # Named volume for MySQL persistence
