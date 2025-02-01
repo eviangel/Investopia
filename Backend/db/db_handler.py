@@ -1,5 +1,8 @@
 import mysql.connector
 import logging
+import pandas as pd
+from sqlalchemy import create_engine
+import pymysql
 
 class DatabaseHandler:
     logging.basicConfig(level=logging.INFO)
@@ -11,6 +14,11 @@ class DatabaseHandler:
             database="database",
         )
         self.cursor = self.db_connection.cursor(buffered=True)
+        # Create an SQLAlchemy engine for Pandas queries
+        try:
+            self.engine = create_engine("mysql+pymysql://root:11@localhost/database")
+        except Exception as e:
+            print(f"Error creating SQLAlchemy engine: {e}")
 
     def get_user_id_by_username(self, username):
         query = "SELECT UserID FROM Users WHERE Username = %s"
@@ -276,3 +284,22 @@ class DatabaseHandler:
     def close(self):
         self.cursor.close()
         self.db_connection.close()
+
+    def get_user_assets(self, user_id):
+        """
+        Retrieve asset details for a user from the database using SQLAlchemy.
+
+        Parameters:
+        - user_id: The ID of the user.
+
+        Returns:
+        - A Pandas DataFrame containing asset names, average prices, and amounts.
+        """
+        try:
+            query = f"SELECT Name AS Asset, Average_Price, Amount FROM Asset WHERE UserID = {user_id}"
+            df = pd.read_sql(query, self.engine)
+            print(f"Fetched user assets: {df}")  # Debugging print
+            return df
+        except Exception as e:
+            print(f"Error fetching user assets: {e}")  # Log error
+            return pd.DataFrame()  # Return empty DataFrame to prevent crashes
