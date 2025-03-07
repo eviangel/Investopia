@@ -1,0 +1,119 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/bootswatch/4.4.1/minty/bootstrap.min.css");
+@import url("https://use.fontawesome.com/releases/v5.0.1/css/all.css");
+
+.notification-container {
+  margin: auto;
+  padding: 30px;
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card {
+  width: 100%;
+  margin-bottom: 5px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.card-body {
+  padding: 0.5rem;
+
+  table {
+    width: 100%;
+
+    tr {
+      display: flex;
+
+      td {
+        a.btn {
+          font-size: 0.8rem;
+          padding: 3px;
+        }
+      }
+
+      td:nth-child(2) {
+        text-align: right;
+        justify-content: space-around;
+      }
+    }
+  }
+}
+
+.card-title:before {
+  display: inline-block;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  font-size: 1.1rem;
+  text-align: center;
+  border: 2px solid grey;
+  border-radius: 100px;
+  width: 30px;
+  height: 30px;
+  padding-bottom: 3px;
+  margin-right: 10px;
+}
+
+.notification-invitation {
+  border-left: 5px solid #90CAF9;
+
+  .card-body .card-title:before {
+    color: #90CAF9;
+    border-color: #90CAF9;
+    content: "\f007"; // User icon
+  }
+}
+
+.notification-warning {
+  border-left: 5px solid #FFE082;
+
+  .card-body .card-title:before {
+    color: #FFE082;
+    border-color: #FFE082;
+    content: "\f071"; // Warning triangle icon
+  }
+}
+
+.notification-danger {
+  border-left: 5px solid #FFAB91;
+
+  .card-body .card-title:before {
+    color: #FFAB91;
+    border-color: #FFAB91;
+    content: "\f00d"; // Close icon
+  }
+}
+
+.notification-reminder {
+  border-left: 5px solid #CE93D8;
+
+  .card-body .card-title:before {
+    color: #CE93D8;
+    border-color: #CE93D8;
+    content: "\f017"; // Clock icon
+  }
+}
+
+.dismiss-notification {
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #c82333 !important;
+  }
+}
+
+.all-caught-up {
+  text-align: center;
+  color: #555;
+  font-size: 1.2rem;
+  margin-top: 20px;
+}

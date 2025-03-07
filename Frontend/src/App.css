@@ -1,45 +1,16 @@
 .app {
   display: flex;
   height: 100vh; /* Full viewport height */
-  /* width: 250vh; Full viewport width */
   background: #1e272e;
   font-family: Arial, sans-serif;
-  overflow: hidden; /* Prevent horizontal scroll */
-}
-
-/* background: #00221a; */
-
-
-/* background: #1e272e; */
-
-
-/* .app {
-  display: flex;
-  height: 100vh;
-}
-
-.sidebar {
-  width: 20%;
-  background: #2e3b4e;
-  color: white;
-  padding: 20px;
-  overflow-y: auto;
+  /* overflow: hidden; */
 }
 
 .main-content {
-  flex: 1;
+  flex: 1; /* Ensures the main content expands fully */
   display: flex;
   flex-direction: column;
-}
-
-.top-bar {
-  height: 60px;
-  background: #2e3b4e;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  color: white;
+  margin-left: 240px;
 }
 
 .content-area {
@@ -47,7 +18,14 @@
   padding: 20px;
   background: #f3f4f6;
   overflow-y: auto;
-} */
+}
 
-
-
+.fullscreen {
+  width: 100%;
+  height: 100vh;
+  background: #2e3b4e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}

@@ -1,12 +1,43 @@
-.portfolio-chart {
-    background: #2e3b4e;
-    padding: 20px;
-    border-radius: 10px;
-    color: white;
-    margin-bottom: 20px;
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
   }
   
-  .portfolio-chart h3 {
-    margin-bottom: 15px;
-    color: #ffffff;
+  .modal-content {
+    background: #3e3e3e; /* Customize background color */
+    padding: 30px;       /* Customize padding */
+    border-radius: 10px;  /* Rounded corners */
+    width: 80%;
+    max-width: 700px;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow for depth */
   }
+  
+  /* Styling for popup chart axes via CSS */
+  .popup-xaxis .recharts-cartesian-axis-tick-value {
+    fill: #ffffff; /* Color for x-axis numbers */
+  }
+  
+  .popup-yaxis .recharts-cartesian-axis-tick-value {
+    fill: #dcdcdc; /* Color for y-axis numbers */
+  }
+  
+  /* Styles for the filter row */
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Adjust spacing as needed */
+  margin-bottom: 10px;
+}
+
+.filter-item label {
+  margin-right: 5px;
+}

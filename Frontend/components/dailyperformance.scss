@@ -1,0 +1,745 @@
+// spacing and padding
+$padSpace: 1em;
+$padSmall: $padSpace / 2;
+$headerHeight: 4em;
+
+// borders and lines
+$lineWidth: 2px;
+$lineStyle: solid;
+$lineColor: rgba( 255, 255, 255, 0.04 );
+$lineJoin: 3px;
+
+// document colors
+$colorDocument: #0c0d0f;
+$colorDocumentText: desaturate( lighten( $colorDocument, 50% ), 20% );
+$colorDocumentLight: lighten( $colorDocument, 8% );
+$colorDocumentDark: darken( $colorDocument, 6% );
+
+// common colors
+$colorDefault: #828a98;
+$colorDefaultText: #dae5ed;
+$colorPrimary: orange;
+$colorPrimaryText: darken( $colorPrimary, 40% );
+$colorSecondary: #20acea;
+$colorSecondaryText: darken( $colorSecondary, 40% );
+$colorGrey: #5c6776;
+$colorGreyText: lighten( $colorGrey, 40% );
+$colorBright: #f0f0f0;
+$colorBrightText: #1f2833;
+$colorGain: limegreen;
+$colorGainText: lighten( $colorGain, 40% );
+$colorLoss: crimson;
+$colorLossText: lighten( $colorLoss, 40% );
+
+// base font options
+$fontSize: 14px;
+$fontSpace: 1.2em;
+$fontWeight: 600;
+$fontFamily: monospace;
+
+// shadow styles
+$shadowPaper: 0 1px 2px rgba( 0, 0, 0, 0.3 );
+$shadowDark: 0 1px 8px rgba( 0, 0, 0, 0.6 );
+$shadowGlow: 0 0 10px rgba( 0, 0, 0, 0.2 );
+
+// transition props
+$fxSpeed: 300ms;
+$fxEase: cubic-bezier( 0.215, 0.610, 0.355, 1.000 );
+
+// screen sizes
+$sizeSmall: 420px;
+$sizeMedium: 720px;
+$sizeLarge: 1200px;
+
+// screen breakpoints
+$screenSmall: "only screen and (min-width : #{$sizeSmall})";
+$screenMedium: "only screen and (min-width : #{$sizeMedium})";
+$screenLarge: "only screen and (min-width : #{$sizeLarge})";
+
+// page reset
+*, *:before, *:after {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background-color: transparent;
+  text-transform: none;
+  text-shadow: none;
+  box-shadow: none;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-overflow-scrolling: touch;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transform-style: flat;
+  transition:
+    border-color $fxSpeed $fxEase,
+    background-color $fxSpeed $fxEase,
+    opacity $fxSpeed $fxEase,
+    transform $fxSpeed $fxEase;
+}
+
+// block types
+article, aside, details, figcaption, figure, footer, header, hgroup,
+menu, nav, section, main, summary, div, h1, h2, h3, h4, h5, h6, hr,
+p, ol, ul, form, img {
+  display: block;
+}
+
+// document setup
+html, body {
+  display: block;
+  position: relative;
+  max-width: 100vw;
+  min-height: 100vh;
+}
+html {
+  overflow: hidden;
+  overflow-y: scroll;
+}
+body {
+  font-family: $fontFamily;
+  font-weight: $fontWeight;
+  font-size: calc( #{$fontSize} - 6px );
+  line-height: $fontSpace;
+  background-color: $colorDocument;
+  color: $colorDocumentText;
+
+  @media #{$screenSmall} {
+    font-size: calc( #{$fontSize} - 4px );
+  }
+  @media #{$screenMedium} {
+    font-size: calc( #{$fontSize} - 2px );
+  }
+  @media #{$screenLarge} {
+    font-size: $fontSize;
+  }
+}
+
+// headings
+h1, h2, h3, h4, h5, h6 {
+  display: block;
+  font-weight: inherit;
+  line-height: $fontSpace;
+}
+
+// horizontal lines
+hr {
+  display: block;
+  overflow: hidden;
+  margin: $padSpace 0;
+  height: 0;
+  border: 0;
+  border-bottom: $lineWidth $lineStyle $lineColor;
+}
+
+// inputs
+input, button, select, option, textarea {
+  display: block;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+// media query helpers
+.if-small {
+  display: none;
+  @media #{$screenSmall} {
+    display: initial;
+  }
+}
+.if-medium {
+  display: none;
+  @media #{$screenMedium} {
+    display: initial;
+  }
+}
+.if-large {
+  display: none;
+  @media #{$screenLarge} {
+    display: initial;
+  }
+}
+
+// not rendered
+.hidden, [hidden], [v-cloak] {
+  display: none;
+}
+
+// visible but not usable
+.disabled, [disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+// common card style
+.card {
+  padding: $padSpace;
+  background-color: $colorDocumentLight;
+  border-radius: $lineJoin;
+  box-shadow: $shadowPaper;
+}
+
+// margin helpers
+.push-top { margin-top: $padSpace; }
+.push-right { margin-right: $padSpace; }
+.push-bottom { margin-bottom: $padSpace; }
+.push-left { margin-left: $padSpace; }
+.push-all { margin: $padSpace; }
+
+// padding helpers
+.pad-top { padding-top: $padSpace; }
+.pad-right { padding-right: $padSpace; }
+.pad-bottom { padding-bottom: $padSpace; }
+.pad-left { padding-left: $padSpace; }
+.pad-all { padding: $padSpace; }
+
+// border helpers
+.border-top { border-top: $lineWidth $lineStyle $lineColor; }
+.border-right { border-right: $lineWidth $lineStyle $lineColor; }
+.border-bottom { border-bottom: $lineWidth $lineStyle $lineColor; }
+.border-left { border-left: $lineWidth $lineStyle $lineColor; }
+
+// flex helpers
+.flex-row { display: flex; flex-direction: row; flex-wrap: nowrap; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-left { justify-content: flex-start; }
+.flex-center { justify-content: center; }
+.flex-right { justify-content: flex-end; }
+.flex-space { justify-content: space-between; }
+.flex-around { justify-content: space-around; }
+.flex-top { align-items: flex-start; }
+.flex-middle { align-items: center; }
+.flex-bottom { align-items: flex-end; }
+.flex-1 { flex: 1; }
+.flex-2 { flex: 2; }
+.flex-3 { flex: 3; }
+.flex-4 { flex: 4; }
+.flex-5 { flex: 5; }
+
+// text helpers
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.text-justify { text-align: justify; }
+.text-uppercase { text-transform: uppercase; }
+.text-lowercase { text-transform: lowercase; }
+.text-capitalize { text-transform: capitalize; }
+.text-underline { text-decoration: underline; }
+.text-striked { text-decoration: line-through; }
+.text-italic { font-style: italic; }
+.text-bold { font-weight: bold; }
+.text-nowrap { white-space: nowrap; }
+.text-clip { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.text-primary { color: $colorPrimary; }
+.text-secondary { color: $colorSecondary; }
+.text-grey { color: $colorGrey; }
+.text-bright { color: $colorBright; }
+.text-faded { color: white; opacity: 0.3; }
+.text-big { font-size: 120%; line-height: ( $fontSpace * 1.01 ); }
+.text-small { font-size: 70%; line-height: ( $fontSpace * 0.95 ); }
+.text-condense { letter-spacing: -1px; }
+
+// shadow helpers
+.shadow-box { box-shadow: $shadowPaper; }
+.shadow-text { text-shadow: $shadowPaper; }
+
+// input wrapper
+.form-input {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  padding: ( $padSpace * .7 ) $padSpace;
+  color: $colorBright;
+  background-color: lighten( $colorDocument, 20% );
+  border-radius: 100px;
+
+  &.dark {
+    background-color: darken( $colorDocument, 20% );
+  }
+  & > input {
+    width: auto;
+  }
+}
+
+// menu dropdown (unused, but left for reference)
+@keyframes dropdownShow {
+  0% { transform: translateY(30px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.dropdown {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  & > ul {
+    display: none;
+    list-style: none;
+    position: absolute;
+    transition: none;
+    animation: dropdownShow $fxSpeed $fxEase forwards;
+    right: 0;
+    top: 50%;
+    min-width: 200px;
+    max-width: 400px;
+    padding: ( $padSpace / 2 ) 0;
+    background-color: lighten( $colorDocumentLight, 4% );
+    border-radius: $lineJoin;
+    box-shadow: $shadowDark;
+    & > li {
+      display: block;
+      padding: ( $padSpace / 2 ) $padSpace;
+      background-color: rgba(#000, 0);
+      color: $colorBright;
+      cursor: pointer;
+      & + li {
+        border-top: $lineWidth $lineStyle $lineColor;
+      }
+      &:hover {
+        background-color: rgba(#000, 0.1);
+      }
+    }
+  }
+  &:hover > ul,
+  &:active > ul {
+    display: block;
+  }
+}
+$headerHeight: 3em;
+// app header
+.header-wrap {
+  position: fixed;
+  left: 224px;
+  top: 0;
+  width: calc(100% - 224px);
+  height: $headerHeight;
+  background-color: $colorDocumentLight;
+  background-image: radial-gradient( ellipse at top, rgba(#fff, 0.1) 0%, transparent 60% );
+  box-shadow: $shadowDark;
+  z-index: 999;
+  .header-row {
+    height: $headerHeight;
+    padding: $padSpace;
+  }
+}
+
+.search-box {
+  width: 100%;
+  max-width: 300px;
+  padding: 8px 12px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #555;
+  background: #222;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.toggle-btn {
+  background: #222;
+  color: #fff;
+  border: 1px solid #555;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+.coin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #1b1b1b; /* Dark table background */
+  color: #fff;
+  font-size: 16px;
+  margin-top: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* ✅ Table Header */
+.coin-table th {
+  background: #333;
+  color: #fff;
+  padding: 10px;
+  text-align: left;
+  font-weight: bold;
+  border-bottom: 2px solid #555;
+}
+
+/* ✅ Table Rows */
+.coin-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #333;
+}
+
+/* ✅ Alternating Row Backgrounds */
+.coin-table tbody tr:nth-child(even) {
+  background: #222;
+}
+
+/* ✅ Gain/Loss Coloring for Table */
+.coin-table .gain {
+  background-color: rgba(50, 205, 50, 0.2) !important; /* Light green */
+  color: limegreen !important;
+}
+
+.coin-table .loss {
+  background-color: rgba(220, 20, 60, 0.2) !important; /* Light red */
+  color: crimson !important;
+}
+
+/* ✅ Hover Effect */
+.coin-table tbody tr:hover {
+  background: #444;
+}
+
+// price grid
+.main-wrap {
+  margin-top: $headerHeight;
+  position: relative;
+  padding: calc( #{$headerHeight} + #{$padSpace} ) $padSpace $padSpace $padSpace;
+
+  .main-grid-list {
+    display: grid;
+    grid-template-columns: repeat( auto-fill, minmax( 380px, 1fr ) );
+    grid-gap: $padSpace;
+
+    @media #{$screenSmall} {
+      grid-template-columns: repeat( auto-fill, minmax( 380px, 1fr ) );
+    }
+
+    .main-grid-item {
+      background-color: $colorDocumentLight;
+      background-image: linear-gradient( 65deg, rgba(#fff, 0.02) 40%, transparent 40% );
+      border-radius: $lineJoin;
+      box-shadow: $shadowPaper;
+      position: relative;
+      transition: all 0.3s ease-in-out;
+
+      .hidden-details {
+        opacity: 0;
+        transform: translateY(5px);
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        pointer-events: none;
+      }
+
+      &:hover .hidden-details {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+      .show-always {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+        pointer-events: auto !important;
+      }
+      /* When the parent .main-grid-item is hovered, reveal .hover-enabled */
+      .main-grid-item:hover .hover-enabled {
+        display: block;
+      }
+
+      &.gain {
+        background-color: desaturate( darken($colorGain, 35%), 50% );
+        polyline.color { stroke: $colorGain; }
+        circle.color { fill: $colorGain; }
+        .color { color: $colorGain; }
+      }
+      &.loss {
+        background-color: desaturate( darken($colorLoss, 32%), 50% );
+        polyline.color { stroke: $colorLoss; }
+        circle.color { fill: $colorLoss; }
+        .color { color: $colorLoss; }
+      }
+      
+      .gain, .loss {
+        color: inherit; // Makes sure text color is inherited inside
+      }
+      
+      .gain {
+        color: $colorGain !important; // Ensures profit text is green
+      }
+      
+      .loss {
+        color: $colorLoss !important; // Ensures loss text is red
+      }
+
+      .main-grid-info {
+        padding: $padSpace;
+        img {
+          width: auto;
+          height: 42px;
+          @media #{$screenSmall} { height: 52px; }
+          @media #{$screenMedium} { height: 64px; }
+        }
+      }
+
+      .main-grid-chart {
+        padding: $padSpace;
+        background-image: radial-gradient( ellipse at top right, rgba(#000, 0.4) 0%, rgba(#000, 0) 60% );
+      }
+    }
+  }
+}
+.sort-dropdown {
+  background: #222;
+  color: #fff;
+  border: 1px solid #555;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  cursor: pointer;
+}
+// loader
+.loader-wrap {
+  display: none;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(#000, 0.8);
+  text-align: center;
+  z-index: 9999;
+
+  &.visible {
+    display: flex;
+  }
+
+  .loader-content {
+    padding: $padSpace ( $padSpace * 2 );
+    background-color: $colorDocumentLight;
+    border-radius: $lineJoin;
+    box-shadow: $shadowPaper;
+    i {
+      font-style: normal;
+      font-size: 600%;
+      line-height: normal;
+    }
+  }
+}
+
+.filter-checkbox {
+  font-size: 16px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.filter-checkbox input {
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.checkbox-control {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none; // prevent text highlighting on clicks
+  
+  // Hide the native checkbox input, but keep it accessible
+  input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .checkmark {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    background-color: #ccc;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+    position: relative;
+  }
+  
+  // Add the check "tick" with a pseudo-element
+  .checkmark::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 6px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) scale(0); // Hidden by default
+    transition: transform 0.2s ease;
+  }
+
+  // When the checkbox is checked, change background and show tick
+  input[type="checkbox"]:checked + .checkmark {
+    background-color: #20acea; // or some accent color
+  }
+  input[type="checkbox"]:checked + .checkmark::after {
+    transform: rotate(45deg) scale(1); // show the check
+  }
+
+  .checkbox-label {
+    color: #fff; // adjust as needed
+    font-size: 16px;
+  }
+
+
+  
+}
+
+/* ✅ Settings Button */
+.settings-btn {
+  background: #222;
+  color: #fff;
+  border: 1px solid #555;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+/* ✅ Settings Dropdown */
+.settings-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* ✅ Hidden Dropdown Menu */
+.settings-menu {
+  display: block;
+  position: absolute;
+  top: 40px;
+  left: 0;
+  background: #1b1b1b;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  width: 200px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 14px;
+}
+
+/* ✅ Make Sure the Checkbox is Visible */
+.checkbox-label input[type="checkbox"] {
+  appearance: auto !important;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: limegreen;
+}
+
+.chart-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 400px;
+  background: #1b1b1b;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.close-btn {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.close-btn:hover {
+  background: #cc0000;
+}
+
+/* ✅ Login Panel */
+.login-panel {
+  width: 300px;
+  margin: 100px auto;
+  padding: 20px;
+  background: #222;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* ✅ Input Boxes */
+.input-box {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #555;
+  background: #333;
+  color: white;
+}
+
+/* ✅ Login Button */
+.login-btn {
+  background: limegreen;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.login-btn:hover {
+  background: #228B22;
+}
+
+/* ✅ Logout Button */
+.logout-btn {
+  background: crimson;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.logout-btn:hover {
+  background: #B22222;
+}
+
+/* ✅ Error Message */
+.error-msg {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+
+.nav-btn {
+  display: inline-block;
+  padding: 10px 15px;
+  background: #007BFF;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+.nav-btn:hover {
+  background: #0056b3;
+}

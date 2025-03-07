@@ -2,7 +2,7 @@
 .balance-info {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  
   background: #2e3b4e;
   padding: 20px;
   border-radius: 10px;
@@ -63,6 +63,11 @@
 .action-button:hover {
   background-color: #16a085;
 }
+.balance-change {
+  font-size: 18px;
+  font-weight: bold;
+  color: #16a085; /* Green for positive PnL */
+}
 
 /* .best-performer {
   border: 2px solid #1abc9c;
@@ -71,3 +76,5 @@
 .worst-performer {
   border: 2px solid #e74c3c;
 } */
+
+

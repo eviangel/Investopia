@@ -47,3 +47,29 @@ class TransactionService:
             print(f"Error syncing transactions: {e}")
         finally:
             db.close()
+
+    #to be modified later on....
+    @staticmethod
+    def get_user_transaction_history(user_id):
+        """
+        Fetch all transactions (withdrawals & deposits) for a user across all exchanges.
+
+        Parameters:
+        - user_id (int): The ID of the user.
+
+        Returns:
+        - JSON response with `withdrawals` and `deposits`.
+        """
+        db_handler = DatabaseHandler()
+
+        try:
+            withdrawals = db_handler.get_all_user_transactions(user_id, "WITHDRAW")
+            deposits = db_handler.get_all_user_transactions(user_id, "DEPOSIT")
+
+            return {"withdrawals": withdrawals, "deposits": deposits}
+
+        except Exception as e:
+            raise Exception(f"Error fetching transactions: {str(e)}")
+
+        finally:
+            db_handler.close()

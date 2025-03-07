@@ -3,20 +3,27 @@ import logging
 import pandas as pd
 from sqlalchemy import create_engine
 import pymysql
+import bcrypt
+import datetime
+from jose import jwt
+from config.config import Config
 
 class DatabaseHandler:
     logging.basicConfig(level=logging.INFO)
     def __init__(self):
         self.db_connection = mysql.connector.connect(
-            user="root",
-            password="11",
-            host="localhost",
-            database="database",
+            user=Config.DB_USER,
+            password=Config.DB_PASSWORD,
+            host=Config.DB_HOST,
+            database=Config.DB_NAME,
+            port = 3306,
+            use_pure=True
         )
         self.cursor = self.db_connection.cursor(buffered=True)
         # Create an SQLAlchemy engine for Pandas queries
         try:
-            self.engine = create_engine("mysql+pymysql://root:11@localhost/database")
+            # self.engine = create_engine("mysql+pymysql://root:11@127.0.0.1/database")
+            self.engine = create_engine(Config.DATABASE_URL)
         except Exception as e:
             print(f"Error creating SQLAlchemy engine: {e}")
 
@@ -138,11 +145,11 @@ class DatabaseHandler:
 
         Parameters:
         - username: Username of the user performing the transaction.
-        - asset_name: Name of the asset (e.g., BTC, ETH).
+        - asset_name: Name of the asset (e.g., BTC, EUR).
         - time: Timestamp of the transaction.
         - quantity: Quantity of the asset in the transaction.
         - price: Price of the asset in the transaction.
-        - action: Transaction type (e.g., BUY, SELL).
+        - action: Transaction type (e.g., BUY, SELL, Deposit, Withdrawal).
         - commission: Commission paid for the transaction.
         """
         # Get the UserID from the username
@@ -151,14 +158,25 @@ class DatabaseHandler:
             print("Transaction insertion failed: User not found.")
             return
 
-        # Get the AssetID from the asset name
+        # Ensure the asset exists for this user
         query_get_asset_id = "SELECT id FROM Asset WHERE Name = %s AND UserID = %s"
         self.cursor.execute(query_get_asset_id, (asset_name, user_id))
         asset_id_result = self.cursor.fetchone()
 
         if not asset_id_result:
-            print(f"Transaction insertion failed: Asset '{asset_name}' not found for user.")
-            return
+            print(f"⚠️ Asset '{asset_name}' not found for user {username}. Inserting it now...")
+
+            # Insert asset with default values if missing
+            query_insert_asset = """
+            INSERT INTO Asset (Name, Amount, UserID, Average_Price)
+            VALUES (%s, %s, %s, %s)
+            """
+            self.cursor.execute(query_insert_asset, (asset_name, 0, user_id, 1.0))  # Default amount = 0, avg price = 1.0
+            self.db_connection.commit()
+
+            # Fetch the new AssetID
+            self.cursor.execute(query_get_asset_id, (asset_name, user_id))
+            asset_id_result = self.cursor.fetchone()
 
         asset_id = asset_id_result[0]
 
@@ -171,16 +189,17 @@ class DatabaseHandler:
         exists = self.cursor.fetchone()[0]
 
         if not exists:
-            # Insert the transaction if it doesn't exist
+            # Insert the transaction
             query_insert_transaction = """
             INSERT INTO Transaction (AssetID, UserID, Time, Quantity, Price, Action, Commission)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
             """
             self.cursor.execute(query_insert_transaction, (asset_id, user_id, time, quantity, price, action, commission))
             self.db_connection.commit()
-            print(f"Transaction for asset '{asset_name}' inserted successfully.")
+            print(f"✅ Transaction for asset '{asset_name}' inserted successfully.")
         else:
-            print(f"Transaction for asset '{asset_name}' already exists.")
+            print(f"⚠️ Transaction for asset '{asset_name}' already exists.")
+
 
     def fetch_symbols(user_id, binance):
         """
@@ -303,3 +322,201 @@ class DatabaseHandler:
         except Exception as e:
             print(f"Error fetching user assets: {e}")  # Log error
             return pd.DataFrame()  # Return empty DataFrame to prevent crashes
+
+    def get_assets_with_zero_average_price(self, user_id):
+        """
+        Fetch all assets for a specific user where Average_Price = 0.
+
+        Parameters:
+        - user_id: The ID of the user.
+
+        Returns:
+        - A list of tuples containing asset details.
+        """
+        try:
+            query = """
+                SELECT Name, Amount 
+                FROM Asset 
+                WHERE UserID = %s AND Average_Price = 0
+            """
+            self.cursor.execute(query, (user_id,))
+            assets = self.cursor.fetchall()
+            return [{"Asset": row[0], "Amount": row[1]} for row in assets]
+        except Exception as e:
+            print(f"Error fetching assets with zero average price: {e}")
+            return []
+
+    def insert_or_update_coin(self, symbol, coin_id):
+        """
+        Insert or update a coin ID in the `coin_mapping` table.
+        """
+        query = """
+            INSERT INTO coin_mapping (symbol, coin_id)
+            VALUES (%s, %s)
+            ON DUPLICATE KEY UPDATE coin_id = VALUES(coin_id)
+        """
+        self.cursor.execute(query, (symbol.upper(), coin_id))
+        self.db_connection.commit()
+
+    def get_coin_id(self, symbol):
+        """
+        Fetch the CoinGecko ID for a given asset symbol from the database.
+        """
+        query = "SELECT coin_id FROM coin_mapping WHERE symbol = %s"
+        self.cursor.execute(query, (symbol.upper(),))
+        result = self.cursor.fetchone()
+        return result[0] if result else None
+
+    def start_transaction(self):
+        """Start a database transaction."""
+        self.db_connection.start_transaction()
+
+    def commit_transaction(self):
+        """Commit the current database transaction."""
+        self.db_connection.commit()
+
+    def rollback_transaction(self):
+        """Rollback the current database transaction."""
+        self.db_connection.rollback()
+
+    def get_asset_id(self, asset_symbol):
+        """
+        Get AssetID for a given asset symbol.
+        
+        Parameters:
+        - asset_symbol: The symbol of the asset (e.g., 'BTC', 'ETH').
+
+        Returns:
+        - AssetID (int) if found, None otherwise.
+        """
+        query = "SELECT id FROM Asset WHERE Name = %s LIMIT 1;"
+        self.cursor.execute(query, (asset_symbol,))
+        result = self.cursor.fetchone()
+        return result[0] if result else None
+
+    def insert_transactions_bulk(self, transactions):
+        """
+        Insert multiple transactions in a single query.
+
+        Parameters:
+        - transactions: List of tuples containing transaction data.
+        """
+        query = """
+        INSERT IGNORE INTO `Transaction` (AssetID, UserID, Time, Quantity, Price, Action, Commission)
+        VALUES (%s, %s, %s, %s, %s, %s, %s);
+        """
+        self.cursor.executemany(query, transactions)
+        self.db_connection.commit()  # ✅ Commit after executing batch insert
+
+    def get_all_user_transactions(self, user_id, transaction_type):
+        """
+        Fetch all transactions (withdraw or deposit) for a user across all exchanges.
+
+        Parameters:
+        - user_id (int): The ID of the user.
+        - transaction_type: Either 'WITHDRAW' or 'DEPOSIT'.
+
+        Returns:
+        - A list of dictionaries containing transaction details.
+        """
+        query = """
+            SELECT t.id, a.Name AS asset, t.Time, t.Quantity, t.Action, t.Commission
+            FROM Transaction t
+            JOIN Asset a ON t.AssetID = a.id
+            WHERE t.UserID = %s AND t.Action = %s
+            ORDER BY t.Time DESC
+        """
+        self.cursor.execute(query, (user_id, transaction_type))
+        transactions = self.cursor.fetchall()
+
+        return [
+            {
+                "transaction_id": row[0],
+                "asset": row[1],
+                "time": row[2],
+                "quantity": row[3],
+                "action": row[4],
+                "commission": row[5],
+            }
+            for row in transactions
+        ]
+
+   ### 🔹 AUTH METHODS ###
+    def create_users_table(self):
+        """Ensure the Users table exists"""
+        query = """
+        CREATE TABLE IF NOT EXISTS Users (
+            UserID INT(9) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            Username VARCHAR(100) NOT NULL UNIQUE,
+            Email VARCHAR(100) NOT NULL UNIQUE,
+            Password_hash VARCHAR(255) NOT NULL,
+            Created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+        """
+        self.cursor.execute(query)
+        self.db_connection.commit()
+
+    def register_user(self, username, email, password):
+        """Register a new user with hashed password"""
+        hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
+        query = "INSERT INTO Users (Username, Email, Password_hash) VALUES (%s, %s, %s)"
+        try:
+            self.cursor.execute(query, (username, email, hashed_password))
+            self.db_connection.commit()
+            return {"message": "User registered successfully"}
+        except mysql.connector.Error as e:
+            self.db_connection.rollback()  # ✅ Rollback on failure
+            return {"error": str(e)}
+
+    def authenticate_user(self, email, password):
+        """Authenticate user and return JWT token"""
+        query = "SELECT UserID, Username, Password_hash FROM Users WHERE Email = %s"
+        self.cursor.execute(query, (email,))
+        user = self.cursor.fetchone()
+
+        if user and bcrypt.checkpw(password.encode("utf-8"), user[2].encode("utf-8")):
+            token = jwt.encode(
+                {"user_id": user[0], "username": user[1], "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=2)},
+                Config.SECRET_KEY,
+                algorithm=Config.ALGORITHM
+            )
+            return {"access_token": token, "token_type": "bearer"}
+        return None
+
+    #end of auth methods
+    def update_asset_balance(self, user_id, asset_name, amount, action):
+        """
+        Update the asset balance in the database based on deposits or withdrawals.
+
+        Parameters:
+        - user_id: The ID of the user.
+        - asset_name: The name of the asset (e.g., EUR).
+        - amount: The deposit/withdrawal amount.
+        - action: 'Deposit' or 'Withdrawal'.
+        """
+        # Fetch the current asset amount
+        query_check = "SELECT Amount FROM Asset WHERE Name = %s AND UserID = %s"
+        self.cursor.execute(query_check, (asset_name, user_id))
+        result = self.cursor.fetchone()
+
+        if result:
+            current_amount = float(result[0])
+            
+            # Update amount based on action
+            if action == "Deposit":
+                new_amount = current_amount + amount
+            elif action == "Withdrawal":
+                new_amount = max(0, current_amount - amount)  # Ensure balance doesn't go negative
+            
+            # Update the asset balance in the database
+            query_update = "UPDATE Asset SET Amount = %s WHERE Name = %s AND UserID = %s"
+            self.cursor.execute(query_update, (new_amount, asset_name, user_id))
+        
+        else:
+            # If asset does not exist, insert it (only for deposits)
+            if action == "Deposit":
+                query_insert = "INSERT INTO Asset (Name, Amount, UserID, Average_Price) VALUES (%s, %s, %s, %s)"
+                self.cursor.execute(query_insert, (asset_name, amount, user_id, 1.0))  # Default avg_price = 1.0
+
+        self.db_connection.commit()

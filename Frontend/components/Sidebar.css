@@ -38,7 +38,13 @@
 
 
 .sidebar {
-  width: 10%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto; /* Allows scrolling within the sidebar if needed */
+  z-index: 1000; /* Makes sure it stays on top */
+  width: 224px;
+  height: 100vh;
   background: linear-gradient(180deg, #34495e, #2c3e50);
   color: white;
   padding: 20px;
@@ -94,3 +100,25 @@
   padding: 10px;
 }
 
+
+
+.daily-performance-button {
+  margin: 25px 0;
+  cursor: pointer;
+  color: #bdc3c7;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.daily-performance-button:hover {
+  background-color: #1abc9c;
+  color: white;
+}
+
+.daily-performance-button .sidebar-icon {
+  margin-right: 15px;
+  font-size: 18px;
+}

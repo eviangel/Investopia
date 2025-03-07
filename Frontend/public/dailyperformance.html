@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Daily Performance - User Assets</title>
+  <link rel="stylesheet" href="/dailyperformance.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div id="app" v-cloak>
+
+
+  <div v-if="isLoggedIn">
+  <header class="header-wrap">
+    <div class="header-row flex-row flex-middle flex-space">
+      <h1 class="text-nowrap text-condense shadow-text">Asset Performance</h1>
+    <!-- Sorting Dropdown -->
+    <select v-model="sortBy" class="sort-dropdown">
+      <option value="profitLossPercent">Asset Performance</option>
+      <option value="percent">Coin Daily Performance</option>
+      <option value="portfolioPercentage">Portfolio %</option>
+      <option value="totalValue">Total Value</option>
+    </select>
+    <input type="text" v-model="searchQuery" placeholder="Search for a coin..." class="search-box">
+    <select v-model="sortDirection" class="sort-direction-dropdown">
+      <option value="desc">Descending</option>
+      <option value="asc">Ascending</option>
+    </select>
+    <!-- Filter Checkbox -->
+    <div class="settings-dropdown">
+      <button @click="settingsOpen = !settingsOpen" class="settings-btn">
+        ⚙️ Settings
+      </button>
+      
+      <!-- ✅ Dropdown List (Shown When Clicked) -->
+      <div v-show="settingsOpen" class="settings-menu">
+        <label class="checkbox-label">
+          <input type="checkbox" v-model="filterLowValue"> Hide assets below $10
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" v-model="showDetails"> Show coin details
+        </label>
+      </div>
+    </div>
+    <button @click="toggleDisplayMode" class="toggle-btn">
+      Switch to {{ displayMode === 'grid' ? 'Table' : 'Grid' }} View
+    </button>
+    </div>
+    <div v-if="selectedCoin" class="chart-container">
+      <h2>{{ selectedCoin.token }} Portfolio Share</h2>
+      <canvas id="pieChart"></canvas>
+      <button @click="selectedCoin = null" class="close-btn">Close</button>
+    </div>
+    <a v-if="isLoggedIn" href="set-average-price.html" class="nav-btn">
+      Set Average Price
+    </a>
+  </header>
+
+  <!-- main content grid -->
+  <main class="main-wrap">
+    <div v-if="displayMode === 'grid'" class="main-grid-list">
+      <!-- v-for to create a card for each coin -->
+      <div class="main-grid-item"
+      v-for="c in sortedCoins"
+      :key="c.symbol"
+      :class="{
+        'gain': (sortBy === 'profitLossPercent' ? c.profitLossPercent > 0 : c.percent > 0),
+        'loss': (sortBy === 'profitLossPercent' ? c.profitLossPercent < 0 : c.percent < 0)
+      }"
+       @click="selectCoin(c)">
+
+   <div class="main-grid-info flex-row flex-top flex-stretch">
+     <div class="push-right">
+       <img :src="c.icon" :alt="c.pair" @error="onImgError" />
+     </div>
+     <div class="flex-1 shadow-text">
+       <div class="flex-row flex-top flex-space">
+         <div class="text-left text-clip push-right">
+           <h1 class="text-primary text-clip" :style="{ fontSize: getFontSize(c.token) }">
+             {{ c.token }}
+             <small class="text-faded text-small text-condense">/{{ c.asset }}</small>
+           </h1>
+           <h2 class="text-bright text-clip">
+            {{ (c.close || 0).toFixed(8) }}
+          </h2>
+         </div>
+         <div class="text-right">
+           <!-- Always Visible -->
+           <div class="color text-big text-clip">
+            {{ c.percent !== undefined ? c.percent + '%' : '0.00%' }}
+            <small class="text-faded">Daily perf</small>
+          </div>
+          <div class="color text-big text-clip" 
+          :class="{ 'gain': c.profitLossPercent > 0, 'loss': c.profitLossPercent < 0 }">
+          {{ c.profitLossPercent.toFixed(2) }}%
+          <small class="text-faded">Asset perf</small>
+          </div>
+           <!-- Hidden by Default, Shown on Hover -->
+           <div class="hidden-details"
+            :class="{ 'show-always': showDetails, 'hover-enabled': !showDetails }">
+            <div class="text-clip">
+              {{ c.amount | toMoney }}
+              <small class="text-faded">Amount</small>
+            </div>
+            <div class="text-clip">
+              {{ c.avgPrice }}
+              <small class="text-faded">Avg Price</small>
+            </div>
+            <div class="text-clip">
+              {{ c.portfolioPercentage.toFixed(2) }}%
+              <small class="text-faded">Portfolio %</small>
+            </div>
+        </div>
+         </div>
+       </div>
+     </div>
+ </div>
+
+    </div>
+    </div>
+    <table v-else class="coin-table">
+      <thead>
+        <tr>
+          <th>Coin</th>
+          <th>Price</th>
+          <th>Asset Perf (%)</th>
+          <th>Daily Perf (%)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="c in sortedCoins"
+            :key="c.symbol"
+            :class="{
+              'gain': (sortBy === 'profitLossPercent' ? c.profitLossPercent > 0 : c.percent > 0),
+              'loss': (sortBy === 'profitLossPercent' ? c.profitLossPercent < 0 : c.percent < 0)
+            }">
+          <td>{{ c.token }}</td>
+          <td>{{ c.close.toFixed(2) }}</td>
+          <td>{{ c.profitLossPercent.toFixed(2) }}%</td>
+          <td>{{ c.percent.toFixed(2) }}%</td>
+        </tr>
+      </tbody>
+    </table>
+
+   
+  </main>
+  
+  <!-- loader -->
+  <!-- <div class="loader-wrap" :class="{ visible: loaderVisible }">
+    <div class="loader-content">
+      <div v-if="status === 0"><i>📡</i><br> Connecting...</div>
+      <div v-else-if="status === 1"><i>💬</i><br> Waiting for data...</div>
+      <div v-else-if="status === 2"><i>😃</i><br> Connected</div>
+      <div v-else-if="status === -1"><i>😡</i><br> Error connecting</div>
+    </div>
+  </div> -->
+
+</div>
+</div>
+<!-- custom Vue logic -->
+<script src="/dailyperformance.js"></script>
+</body>
+</html>
